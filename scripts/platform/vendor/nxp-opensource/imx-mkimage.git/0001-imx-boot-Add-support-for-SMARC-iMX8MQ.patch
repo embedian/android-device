@@ -1,0 +1,28 @@
+From 35228efa5a54174adde57f5511975d2a4268011e Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Thu, 7 Oct 2021 15:09:28 +0800
+Subject: [PATCH] imx-boot: Add support for SMARC-iMX8MQ
+
+---
+ iMX8M/soc.mak | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/iMX8M/soc.mak b/iMX8M/soc.mak
+index 30ecefd..c362034 100644
+--- a/iMX8M/soc.mak
++++ b/iMX8M/soc.mak
+@@ -137,9 +137,9 @@ u-boot-atf-tee.bin: u-boot.bin bl31.bin tee.bin
+ clean:
+ 	@rm -f $(MKIMG) u-boot-atf.bin u-boot-atf-tee.bin u-boot-spl-ddr.bin u-boot.itb u-boot.its u-boot-ddr3l.itb u-boot-ddr3l.its u-boot-spl-ddr3l.bin u-boot-ddr4.itb u-boot-ddr4.its u-boot-spl-ddr4.bin u-boot-ddr4-evk.itb u-boot-ivt.itb u-boot-ddr4-evk.its $(OUTIMG)
+ 
+-dtbs = evk.dtb
++dtbs = smarc.dtb
+ $(dtbs):
+-	./$(DTB_PREPROC) $(PLAT)-evk.dtb $(dtbs)
++	./$(DTB_PREPROC) $(PLAT)-smarc.dtb $(dtbs)
+ 
+ u-boot.itb: $(dtbs)
+ 	./$(PAD_IMAGE) tee.bin
+-- 
+2.17.1
+

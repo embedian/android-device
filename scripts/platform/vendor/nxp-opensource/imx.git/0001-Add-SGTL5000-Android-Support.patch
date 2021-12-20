@@ -1,0 +1,66 @@
+From 9db15e73cdbfc820235c23a4963575cbb77192ff Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Fri, 15 Oct 2021 15:00:17 +0800
+Subject: [PATCH] Add SGTL5000 Android Support
+
+---
+ alsa/tinyalsa_hal.cpp | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/alsa/tinyalsa_hal.cpp b/alsa/tinyalsa_hal.cpp
+index 1a5d374..5a8392a 100755
+--- a/alsa/tinyalsa_hal.cpp
++++ b/alsa/tinyalsa_hal.cpp
+@@ -4186,12 +4186,17 @@ static void adjust_card_sequence(struct imx_audio_device *adev)
+     int cardIdx;
+     struct audio_card *pcard_wm8960 = NULL;
+     struct audio_card *pcard_cs42888 = NULL;
++    struct audio_card *pcard_sgtl5000 = NULL;
++    struct mixer *pmixer_sgtl5000 = NULL;
+     struct mixer *pmixer_wm8960 = NULL;
+     struct mixer *pmixer_cs42888 = NULL;
++    int idx_sgtl5000 = -1;
+     int idx_wm8960 = -1;
+     int idx_cs42888 = -1;
+ 
+-    if((adev == NULL) || (adev->audio_card_num == 0))
++    if((adev == NULL) || (adev->audio_card_num == 0)){
++               ALOGI("Adev is NULL or audio_card_num is zero!\n %d");
++       }
+         return;
+ 
+     if(!strstr(adev->device_name, "mek_8q"))
+@@ -4208,16 +4213,28 @@ static void adjust_card_sequence(struct imx_audio_device *adev)
+             pmixer_cs42888 = adev->mixer[cardIdx];
+             idx_cs42888 = cardIdx;
+         }
++        // Search codec driver with name,like:'sgtl5000'
++        else if(strstr(adev->card_list[cardIdx]->driver_name, "sgtl5000")) {
++            pcard_sgtl5000 = adev->card_list[cardIdx];
++            pmixer_sgtl5000 = adev->mixer[cardIdx];
++            idx_sgtl5000 = cardIdx;
++        }
+     }
+ 
+-    if((pcard_wm8960 == NULL) || (pcard_cs42888 == NULL))
++    if((pcard_wm8960 == NULL) || (pcard_cs42888 == NULL) || (pcard_sgtl5000 == NULL))
++               ALOGI("Can not find correct codec card!\n %d");
+         return;
+ 
+-    if(idx_cs42888 < idx_wm8960)
++    if(idx_cs42888 < idx_wm8960){
++               ALOGI("idx cs42888 < idx_wm8960!\n %d");
++       }
+         return;
+ 
+     adev->card_list[idx_wm8960] = pcard_cs42888;
+     adev->card_list[idx_cs42888] = pcard_wm8960;
++    //Add codec device
++    adev->card_list[idx_sgtl5000] = pcard_sgtl5000;
++    adev->mixer[idx_sgtl5000] = pmixer_sgtl5000;
+     adev->mixer[idx_wm8960] = pmixer_cs42888;
+     adev->mixer[idx_cs42888] = pmixer_wm8960;
+ 
+-- 
+2.17.1
+

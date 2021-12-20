@@ -1,0 +1,128 @@
+From b7894cde73ce3e9b3bd474cdd5e977d09b8b8b38 Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Sat, 18 Dec 2021 22:46:02 +0800
+Subject: [PATCH] Android: Changes required to compile android-11.0.0_2.0.0
+
+---
+ common/build/Makefile        |  6 +++---
+ common/build/dtbo.mk         |  2 +-
+ common/tools/imx-make.sh     |  9 +++++----
+ imx8m/ProductConfigCommon.mk | 16 ++++++++--------
+ 4 files changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/common/build/Makefile b/common/build/Makefile
+index b4449a5..e622e5a 100644
+--- a/common/build/Makefile
++++ b/common/build/Makefile
+@@ -7,13 +7,13 @@ KERNEL_OUT := $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ
+ 
+ # firstly to include UbootKernelCommonConfig.mk, then SharedBoardConfig.mk, finally UbootKernelBoardConfig.mk
+ 
+-include ${nxp_git_path}/common/imx_path/ImxPathConfig.mk
++include ${nxp_git_path}/common/EmbPathConfig.mk
+ include ${soc_path}/UbootKernelCommonConfig.mk
+ include ${product_path}/SharedBoardConfig.mk
+ include ${product_path}/UbootKernelBoardConfig.mk
+ 
+-include ${nxp_git_path}/common/build/kernel.mk
+-include ${nxp_git_path}/common/build/uboot.mk
++include ${nxp_git_path}/../nxp/common/build/kernel.mk
++include ${nxp_git_path}/../nxp/common/build/uboot.mk
+ -include ${product_path}/AndroidUboot.mk
+ -include ${product_path}/AndroidTee.mk
+ -include ${GPU_VIV6_PATH}/gpu-viv6/driver/hal/kernel/galcore.mk
+diff --git a/common/build/dtbo.mk b/common/build/dtbo.mk
+index 82a3173..43bec88 100644
+--- a/common/build/dtbo.mk
++++ b/common/build/dtbo.mk
+@@ -22,7 +22,7 @@ KERNEL_SRC_ARCH := arm
+ DTS_ADDITIONAL_PATH :=
+ else ifeq ($(TARGET_KERNEL_ARCH), arm64)
+ KERNEL_SRC_ARCH := arm64
+-DTS_ADDITIONAL_PATH := freescale
++DTS_ADDITIONAL_PATH := embedian
+ else
+ $(error kernel arch not supported at present)
+ endif
+diff --git a/common/tools/imx-make.sh b/common/tools/imx-make.sh
+index dfc906d..3ce8be3 100755
+--- a/common/tools/imx-make.sh
++++ b/common/tools/imx-make.sh
+@@ -126,7 +126,7 @@ if [ ${build_bootloader_kernel_flag} -eq 0 ] && [ ${build_android_flag} -eq 0 ];
+ fi
+ 
+ # vvcam.ko need build with kernel each time to make sure "insmod vvcam.ko" works
+-if [ -n "${build_kernel}" ] && [ ${TARGET_PRODUCT} = "evk_8mp" ]; then
++if [ -n "${build_kernel}" ] && [ ${TARGET_PRODUCT} = "smarc_mx8mp" ]; then
+     build_vvcam="vvcam";
+     build_kernel_module_flag=1;
+ fi
+@@ -137,10 +137,11 @@ if [ -n "${build_kernel}" ]; then
+     build_kernel_module_flag=1;
+ fi
+ 
+-product_makefile=`pwd`/`find device/nxp -maxdepth 4 -name "${TARGET_PRODUCT}.mk"`;
++product_makefile=`pwd`/`find device/embedian -maxdepth 4 -name "${TARGET_PRODUCT}.mk"`;
+ product_path=${product_makefile%/*}
+ soc_path=${product_path%/*}
+ nxp_git_path=${soc_path%/*}
++export AARCH64_GCC_CROSS_COMPILE=$ANDROID_BUILD_TOP/prebuilts/gcc/linux-x86/aarch64/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-
+ 
+ # if uboot is to be compiled, remove the UBOOT_COLLECTION directory
+ if [ -n "${build_bootloader}" ]; then
+@@ -149,12 +150,12 @@ fi
+ 
+ # redirect standard input to /dev/null to avoid manually input in kernel configuration stage
+ soc_path=${soc_path} product_path=${product_path} nxp_git_path=${nxp_git_path} clean_build=${clean_build} \
+-    make -C ./ -f ${nxp_git_path}/common/build/Makefile ${parallel_option} \
++    make -C ./ -f ${nxp_git_path}/../nxp/common/build/Makefile ${parallel_option} \
+     ${build_bootloader} ${build_kernel} </dev/null || exit
+ 
+ if [ ${build_kernel_module_flag} -eq 1 ]; then
+     soc_path=${soc_path} product_path=${product_path} nxp_git_path=${nxp_git_path} clean_build=${clean_build} \
+-        make -C ./ -f ${nxp_git_path}/common/build/Makefile ${parallel_option} \
++        make -C ./ -f ${nxp_git_path}/../nxp/common/build/Makefile ${parallel_option} \
+         ${build_vvcam} ${build_galcore} ${build_mxmwifi} </dev/null || exit
+ fi
+ 
+diff --git a/imx8m/ProductConfigCommon.mk b/imx8m/ProductConfigCommon.mk
+index d8a1b2f..67fbfdb 100644
+--- a/imx8m/ProductConfigCommon.mk
++++ b/imx8m/ProductConfigCommon.mk
+@@ -1,4 +1,4 @@
+-include $(CONFIG_REPO_PATH)/common/build/build_info.mk
++include $(CONFIG_REPO_PATH)/../nxp/common/build/build_info.mk
+ # -------@block_infrastructure-------
+ ifneq ($(IMX8_BUILD_32BIT_ROOTFS),true)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+@@ -244,7 +244,7 @@ PRODUCT_PACKAGES += \
+     libfwdlockengine
+ 
+ PRODUCT_DEFAULT_DEV_CERTIFICATE := \
+-    $(CONFIG_REPO_PATH)/common/security/testkey
++    $(CONFIG_REPO_PATH)/../nxp/common/security/testkey
+ 
+ #OEM Unlock reporting
+ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+@@ -306,12 +306,12 @@ PRODUCT_PACKAGES += \
+ # -------@block_input-------
+ 
+ PRODUCT_COPY_FILES += \
+-    $(CONFIG_REPO_PATH)/common/input/Dell_Dell_USB_Entry_Keyboard.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Dell_Dell_USB_Entry_Keyboard.idc \
+-    $(CONFIG_REPO_PATH)/common/input/Dell_Dell_USB_Keyboard.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Dell_Dell_USB_Keyboard.idc \
+-    $(CONFIG_REPO_PATH)/common/input/Dell_Dell_USB_Keyboard.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/Dell_Dell_USB_Keyboard.kl \
+-    $(CONFIG_REPO_PATH)/common/input/eGalax_Touch_Screen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/HannStar_P1003_Touchscreen.idc \
+-    $(CONFIG_REPO_PATH)/common/input/eGalax_Touch_Screen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Novatek_NT11003_Touch_Screen.idc \
+-    $(CONFIG_REPO_PATH)/common/input/eGalax_Touch_Screen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/eGalax_Touch_Screen.idc
++    $(CONFIG_REPO_PATH)/../nxp/common/input/Dell_Dell_USB_Entry_Keyboard.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Dell_Dell_USB_Entry_Keyboard.idc \
++    $(CONFIG_REPO_PATH)/../nxp/common/input/Dell_Dell_USB_Keyboard.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Dell_Dell_USB_Keyboard.idc \
++    $(CONFIG_REPO_PATH)/../nxp/common/input/Dell_Dell_USB_Keyboard.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/Dell_Dell_USB_Keyboard.kl \
++    $(CONFIG_REPO_PATH)/../nxp/common/input/eGalax_Touch_Screen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/HannStar_P1003_Touchscreen.idc \
++    $(CONFIG_REPO_PATH)/../nxp/common/input/eGalax_Touch_Screen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/Novatek_NT11003_Touch_Screen.idc \
++    $(CONFIG_REPO_PATH)/../nxp/common/input/eGalax_Touch_Screen.idc:$(TARGET_COPY_OUT_VENDOR)/usr/idc/eGalax_Touch_Screen.idc
+ 
+ # -------@block_debug-------
+ # In userdebug, add minidebug info the the boot image and the system server to support
+-- 
+2.17.1
+

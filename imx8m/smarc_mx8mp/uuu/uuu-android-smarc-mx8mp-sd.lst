@@ -1,0 +1,32 @@
+uuu_version 1.4.72 
+SDP: boot -f u-boot-imx8mp-smarc_4g-uuu.imx 
+SDPU: delay 1000 
+SDPU: write -f u-boot-imx8mp-smarc_4g-uuu.imx -offset 0x57c00 
+SDPU: jump 
+SDPV: delay 1000 
+SDPV: write -f u-boot-imx8mp-smarc_4g-uuu.imx -skipspl 
+SDPV: jump 
+FB: ucmd setenv fastboot_dev mmc 
+FB: ucmd setenv mmcdev 1 
+FB: ucmd mmc dev 1 
+FB: ucmd mmc dev 1 0 
+FB: ucmd mmc erase 0x2000 0x8 
+FB: ucmd mmc partconf 1 1 1 1 
+FB[-t 600000]: flash bootloader0 u-boot-imx8mp-trusty-smarc_4g.imx 
+FB[-t 600000]: flash gpt partition-table.img 
+FB: ucmd setenv fastboot_dev mmc 
+FB[-t 600000]: flash dtbo_a dtbo-imx8mp-smarc-hdmi.img 
+FB[-t 600000]: flash vendor_boot_a vendor_boot.img 
+FB[-t 600000]: flash boot_a boot.img 
+FB[-t 600000]: flash vbmeta_a vbmeta-imx8mp-smarc-hdmi.img 
+FB[-t 600000]: flash dtbo_b dtbo-imx8mp-smarc-hdmi.img 
+FB[-t 600000]: flash vendor_boot_b vendor_boot.img 
+FB[-t 600000]: flash boot_b boot.img 
+FB[-t 600000]: flash vbmeta_b vbmeta-imx8mp-smarc-hdmi.img 
+FB[-t 600000]: flash super super.img 
+FB[-t 600000]: erase misc
+FB[-t 600000]: erase presistdata
+FB[-t 600000]: erase fbmisc
+FB[-t 600000]: erase metadata
+FB[-t 600000]: erase userdata
+FB: done 
