@@ -1,0 +1,13 @@
+LOCAL_PATH := $(call my-dir)
+
+CONFIG_IMX_PATH := device/embedian
+
+include $(CONFIG_IMX_PATH)/common/build/dtbo.mk
+include $(CONFIG_REPO_PATH)/common/build/imx-recovery.mk
+include $(CONFIG_REPO_PATH)/common/build/gpt.mk
+#TODO add imx8mp target
+include $(FSL_PROPRIETARY_PATH)/fsl-proprietary/media-profile/media-profile.mk
+-include $(IMX_MEDIA_CODEC_XML_PATH)/mediacodec-profile/mediacodec-profile.mk
+
+BOARD_PACK_RADIOIMAGES += bootloader.img
+INSTALLED_RADIOIMAGE_TARGET  += $(PRODUCT_OUT)/bootloader.img

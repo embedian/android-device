@@ -1,0 +1,25 @@
+From 02c87c6c838dfbffc2f8b3ebc0c86b20d64067ce Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Wed, 17 Sep 2025 07:44:07 +0000
+Subject: [PATCH] imx8mp-pitx:change console port to ttymxc3
+
+---
+ plat/imx/imx8m/imx8mp/platform.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plat/imx/imx8m/imx8mp/platform.mk b/plat/imx/imx8m/imx8mp/platform.mk
+index 0c4193827..ac3721b6b 100644
+--- a/plat/imx/imx8m/imx8mp/platform.mk
++++ b/plat/imx/imx8m/imx8mp/platform.mk
+@@ -168,7 +168,7 @@ $(eval $(call add_define,BL32_BASE))
+ BL32_SIZE		?=	0x2000000
+ $(eval $(call add_define,BL32_SIZE))
+ 
+-IMX_BOOT_UART_BASE	?=	0x30890000
++IMX_BOOT_UART_BASE	?=	0x30a60000
+ ifeq (${IMX_BOOT_UART_BASE},auto)
+     override IMX_BOOT_UART_BASE	:=	0
+ endif
+-- 
+2.34.1
+
