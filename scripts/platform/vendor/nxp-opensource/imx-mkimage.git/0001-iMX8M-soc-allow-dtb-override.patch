@@ -1,0 +1,30 @@
+From fe4c5fc889503442c7251c43aa11dc27c43058e9 Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Tue, 9 Sep 2025 08:39:05 +0000
+Subject: [PATCH] iMX8M: soc: allow dtb override
+
+Upstream-Status: Pending
+Signed-off-by: Eric Lee <eric.lee@embedian.com>
+
+---
+ iMX8M/soc.mak | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/iMX8M/soc.mak b/iMX8M/soc.mak
+index e7c762b..80de2c2 100644
+--- a/iMX8M/soc.mak
++++ b/iMX8M/soc.mak
+@@ -151,9 +151,7 @@ u-boot-atf-tee.bin: u-boot.bin bl31.bin $(TEE)
+ clean:
+ 	@rm -f $(MKIMG) u-boot-atf.bin u-boot-atf-tee.bin u-boot-spl-ddr.bin u-boot.itb u-boot.its u-boot-ddr3l.itb u-boot-ddr3l.its u-boot-spl-ddr3l.bin u-boot-ddr4.itb u-boot-ddr4.its u-boot-spl-ddr4.bin u-boot-ddr4-evk.itb u-boot-ivt.itb u-boot-ddr4-evk.its $(OUTIMG)
+ 
+-dtb = evk.dtb
+-$(dtb):
+-	./$(DTB_PREPROC) $(PLAT)-evk.dtb $(dtb) $(dtbs)
++dtb = $(dtbs)
+ 
+ u-boot.itb: $(dtb) $(supp_dtbs)
+ 	./$(PAD_IMAGE) $(TEE)
+-- 
+2.34.1
+
