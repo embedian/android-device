@@ -1,0 +1,29 @@
+From 6e3a93896f71c898816f6753cd45bd6716369458 Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Tue, 9 Sep 2025 08:27:09 +0000
+Subject: [PATCH] aosp_platform_system_sepolicy: Allow vendor_init access to
+ ota_package_file
+
+Change-Id: Ic82320727df84a07d158c1d62d0d5655e6e5674d
+Upstream-Status: Pending
+Signed-off-by: Eric Lee <eric.lee@embedian.com>
+
+---
+ prebuilts/api/34.0/public/domain.te | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/prebuilts/api/34.0/public/domain.te b/prebuilts/api/34.0/public/domain.te
+index d4be2056f..cc15cb71a 100644
+--- a/prebuilts/api/34.0/public/domain.te
++++ b/prebuilts/api/34.0/public/domain.te
+@@ -822,6 +822,7 @@ full_treble_only(`
+     -system_data_root_file
+     -vendor_userdir_file
+     -vendor_data_file
++    -ota_package_file
+     with_native_coverage(`-method_trace_data_file')
+   }:dir *;
+   neverallow {
+-- 
+2.34.1
+

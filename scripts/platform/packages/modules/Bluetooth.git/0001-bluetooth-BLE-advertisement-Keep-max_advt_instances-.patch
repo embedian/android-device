@@ -1,0 +1,40 @@
+From 31d163dbc0bf8c11e1a906f32a5b32e8778435ce Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Tue, 9 Sep 2025 07:48:13 +0000
+Subject: [PATCH] bluetooth: BLE advertisement: Keep max_advt_instances values
+ aligned
+
+Change-Id: I4f643f3668ec3d140fcb8a8e7cc1b05a87a7d686
+Upstream-Status: Pending
+Signed-off-by: Eric Lee <eric.lee@embedian.com>
+
+---
+ system/gd/hci/controller.cc | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/system/gd/hci/controller.cc b/system/gd/hci/controller.cc
+index 3a4ab17dfb..4daad80662 100644
+--- a/system/gd/hci/controller.cc
++++ b/system/gd/hci/controller.cc
+@@ -44,6 +44,9 @@ constexpr uint8_t kMinEncryptionKeySize = 7;  // #define MIN_ENCRYPTION_KEY_SIZE
+ constexpr bool kDefaultVendorCapabilitiesEnabled = true;
+ static const std::string kPropertyVendorCapabilitiesEnabled =
+         "bluetooth.core.le.vendor_capabilities.enabled";
++/* Keep this constant aligned with MIN_ADVT_INSTANCES_FOR_MA from
++ * android/app/src/com/android/bluetooth/btservice/AdapterService.java */
++static constexpr uint8_t min_advt_instances_for_ma = 5;
+ 
+ using os::Handler;
+ 
+@@ -1177,7 +1180,7 @@ struct Controller::impl {
+       case OpCode::LE_GET_VENDOR_CAPABILITIES:
+         return vendor_capabilities_.is_supported_ == 0x01;
+       case OpCode::LE_MULTI_ADVT:
+-        return vendor_capabilities_.max_advt_instances_ != 0x00;
++        return vendor_capabilities_.max_advt_instances_ >= min_advt_instances_for_ma;
+       case OpCode::LE_BATCH_SCAN:
+         return vendor_capabilities_.total_scan_results_storage_ != 0x00;
+       case OpCode::LE_ADV_FILTER:
+-- 
+2.34.1
+

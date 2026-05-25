@@ -1,0 +1,157 @@
+From c65eb2ec9d6702eab0ce8643b65d61c4e18a43cd Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Wed, 10 Sep 2025 08:10:46 +0000
+Subject: [PATCH] android-imx_platform_hardware_nxp_libbt: Add build rules for
+ embedian boards
+
+---
+ Android.mk                        | 12 ++++++++++++
+ conf/nxp/pitx_8mp/Android.mk      | 10 ++++++++++
+ conf/nxp/pitx_8mp/bt_vendor.conf  |  2 ++
+ conf/nxp/smarc_8mm/Android.mk     | 10 ++++++++++
+ conf/nxp/smarc_8mm/bt_vendor.conf |  2 ++
+ conf/nxp/smarc_8mp/Android.mk     | 10 ++++++++++
+ conf/nxp/smarc_8mp/bt_vendor.conf |  2 ++
+ conf/nxp/smarc_8mq/Android.mk     | 10 ++++++++++
+ conf/nxp/smarc_8mq/bt_vendor.conf |  2 ++
+ 9 files changed, 60 insertions(+)
+ create mode 100644 conf/nxp/pitx_8mp/Android.mk
+ create mode 100644 conf/nxp/pitx_8mp/bt_vendor.conf
+ create mode 100644 conf/nxp/smarc_8mm/Android.mk
+ create mode 100644 conf/nxp/smarc_8mm/bt_vendor.conf
+ create mode 100644 conf/nxp/smarc_8mp/Android.mk
+ create mode 100644 conf/nxp/smarc_8mp/bt_vendor.conf
+ create mode 100644 conf/nxp/smarc_8mq/Android.mk
+ create mode 100644 conf/nxp/smarc_8mq/bt_vendor.conf
+
+diff --git a/Android.mk b/Android.mk
+index 2ca2582..8e26567 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -69,15 +69,27 @@ include $(BUILD_SHARED_LIBRARY)
+ ifeq ($(TARGET_PRODUCT), evk_8mp)
+     include $(LOCAL_PATH)/conf/nxp/evk_8mp/Android.mk
+ endif
++ifeq ($(TARGET_PRODUCT), smarc_8mp)
++    include $(LOCAL_PATH)/conf/nxp/smarc_8mp/Android.mk
++endif
++ifeq ($(TARGET_PRODUCT), pitx_8mp)
++    include $(LOCAL_PATH)/conf/nxp/pitx_8mp/Android.mk
++endif
+ ifeq ($(TARGET_PRODUCT), evk_8mq)
+     include $(LOCAL_PATH)/conf/nxp/evk_8mq/Android.mk
+ endif
++ifeq ($(TARGET_PRODUCT), smarc_8mq)
++    include $(LOCAL_PATH)/conf/nxp/smarc_8mq/Android.mk
++endif
+ ifeq ($(TARGET_PRODUCT), evk_8mn)
+     include $(LOCAL_PATH)/conf/nxp/evk_8mn/Android.mk
+ endif
+ ifeq ($(TARGET_PRODUCT), evk_8mm)
+     include $(LOCAL_PATH)/conf/nxp/evk_8mm/Android.mk
+ endif
++ifeq ($(TARGET_PRODUCT), smarc_8mm)
++    include $(LOCAL_PATH)/conf/nxp/smarc_8mm/Android.mk
++endif
+ ifeq ($(TARGET_PRODUCT), evk_8ulp)
+     include $(LOCAL_PATH)/conf/nxp/evk_8ulp/Android.mk
+ endif
+diff --git a/conf/nxp/pitx_8mp/Android.mk b/conf/nxp/pitx_8mp/Android.mk
+new file mode 100644
+index 0000000..49cb335
+--- /dev/null
++++ b/conf/nxp/pitx_8mp/Android.mk
+@@ -0,0 +1,10 @@
++LOCAL_PATH := $(call my-dir)
++
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := bt_vendor.conf
++LOCAL_MODULE_CLASS := ETC
++LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/bluetooth
++LOCAL_SRC_FILES := $(LOCAL_MODULE)
++
++include $(BUILD_PREBUILT)
+diff --git a/conf/nxp/pitx_8mp/bt_vendor.conf b/conf/nxp/pitx_8mp/bt_vendor.conf
+new file mode 100644
+index 0000000..9646a44
+--- /dev/null
++++ b/conf/nxp/pitx_8mp/bt_vendor.conf
+@@ -0,0 +1,2 @@
++mchar_port = /dev/ttymxc0
++baudrate_fw_init = 115200
+diff --git a/conf/nxp/smarc_8mm/Android.mk b/conf/nxp/smarc_8mm/Android.mk
+new file mode 100644
+index 0000000..49cb335
+--- /dev/null
++++ b/conf/nxp/smarc_8mm/Android.mk
+@@ -0,0 +1,10 @@
++LOCAL_PATH := $(call my-dir)
++
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := bt_vendor.conf
++LOCAL_MODULE_CLASS := ETC
++LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/bluetooth
++LOCAL_SRC_FILES := $(LOCAL_MODULE)
++
++include $(BUILD_PREBUILT)
+diff --git a/conf/nxp/smarc_8mm/bt_vendor.conf b/conf/nxp/smarc_8mm/bt_vendor.conf
+new file mode 100644
+index 0000000..9646a44
+--- /dev/null
++++ b/conf/nxp/smarc_8mm/bt_vendor.conf
+@@ -0,0 +1,2 @@
++mchar_port = /dev/ttymxc0
++baudrate_fw_init = 115200
+diff --git a/conf/nxp/smarc_8mp/Android.mk b/conf/nxp/smarc_8mp/Android.mk
+new file mode 100644
+index 0000000..49cb335
+--- /dev/null
++++ b/conf/nxp/smarc_8mp/Android.mk
+@@ -0,0 +1,10 @@
++LOCAL_PATH := $(call my-dir)
++
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := bt_vendor.conf
++LOCAL_MODULE_CLASS := ETC
++LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/bluetooth
++LOCAL_SRC_FILES := $(LOCAL_MODULE)
++
++include $(BUILD_PREBUILT)
+diff --git a/conf/nxp/smarc_8mp/bt_vendor.conf b/conf/nxp/smarc_8mp/bt_vendor.conf
+new file mode 100644
+index 0000000..9646a44
+--- /dev/null
++++ b/conf/nxp/smarc_8mp/bt_vendor.conf
+@@ -0,0 +1,2 @@
++mchar_port = /dev/ttymxc0
++baudrate_fw_init = 115200
+diff --git a/conf/nxp/smarc_8mq/Android.mk b/conf/nxp/smarc_8mq/Android.mk
+new file mode 100644
+index 0000000..49cb335
+--- /dev/null
++++ b/conf/nxp/smarc_8mq/Android.mk
+@@ -0,0 +1,10 @@
++LOCAL_PATH := $(call my-dir)
++
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := bt_vendor.conf
++LOCAL_MODULE_CLASS := ETC
++LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/bluetooth
++LOCAL_SRC_FILES := $(LOCAL_MODULE)
++
++include $(BUILD_PREBUILT)
+diff --git a/conf/nxp/smarc_8mq/bt_vendor.conf b/conf/nxp/smarc_8mq/bt_vendor.conf
+new file mode 100644
+index 0000000..81299f3
+--- /dev/null
++++ b/conf/nxp/smarc_8mq/bt_vendor.conf
+@@ -0,0 +1,2 @@
++mchar_port = /dev/ttymxc3
++baudrate_fw_init = 115200
+-- 
+2.34.1
+

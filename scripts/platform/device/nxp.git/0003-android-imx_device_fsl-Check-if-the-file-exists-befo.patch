@@ -1,0 +1,29 @@
+From 94abe9f90014359193a80b983f9b0c157a7fcbdc Mon Sep 17 00:00:00 2001
+From: Eric Lee <eric.lee@embedian.com>
+Date: Tue, 9 Sep 2025 11:07:45 +0000
+Subject: [PATCH 3/4] android-imx_device_fsl: Check if the file exists before
+ trying to install it
+
+Signed-off-by: Eric Lee <eric.lee@embedian.com>
+---
+ common/build/uboot.mk                         |   4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/common/build/uboot.mk b/common/build/uboot.mk
+index 46f8dd71..804f5e0e 100644
+--- a/common/build/uboot.mk
++++ b/common/build/uboot.mk
+@@ -150,7 +150,9 @@ $(UBOOT_BIN): $(UBOOTENVSH) | $(UBOOT_COLLECTION) $(UBOOT_OUT)
+ 		else \
+ 			install -D $(UBOOT_OUT)/u-boot$(TARGET_DTB_POSTFIX).$(TARGET_BOOTLOADER_POSTFIX) $(UBOOT_COLLECTION)/u-boot-$$UBOOT_PLATFORM.imx; \
+ 		fi; \
+-		install -D $(UBOOT_COLLECTION)/u-boot-$$UBOOT_PLATFORM.imx $(UBOOT_BIN); \
++		if [ -e "$(UBOOT_COLLECTION)/u-boot-$$UBOOT_PLATFORM.imx" ]; then \
++			install -D $(UBOOT_COLLECTION)/u-boot-$$UBOOT_PLATFORM.imx $(UBOOT_BIN); \
++		fi; \
+ 	done
+ 
+ .PHONY: bootloader $(UBOOT_BIN) $(UBOOTENVSH)
+-- 
+2.34.1
+
